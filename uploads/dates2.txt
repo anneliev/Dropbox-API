@@ -1,0 +1,17 @@
+7/11 2017 - Dropbox
+15/11 2017 -SolarEdge
+12/12 2017 Google Analytics
+
+
+mock test
+gör en funktion, kolla att den funkar. typ toHaveLength
+kolla sen att den kan faila genom att sätta .not.toHaveLength
+tänk på ALLT. vad kan hända, vad ska hända, vad får inte hända
+
+gör inte test på API eller såna som tar lång tid för ofta.
+skriv
+	test.skip
+
+vid fetch test, använd return
+
+

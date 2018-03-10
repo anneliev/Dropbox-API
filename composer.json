@@ -11,7 +11,7 @@
 		"source": "https://github.com/bcit-ci/CodeIgniter"
 	},
 	"require": {
-		"php": ">=5.3.7",
+		"php": ">=7.0.27",
 		"kunalvarma05/dropbox-php-sdk": "^0.2.1"
 	},
 	"suggest": {

@@ -1,0 +1,14 @@
+Examensarbete
+
+Ifrågasätt allt
+Glöm egna åsikter och känslor
+Förklara begrepp mm. genomgående, även de som inte kan kod ska kunna förstå
+Ska genomföra ett projekt från koncept till färdig produkt
+Visa förmåga att med helhetssyn kritiskt, självständigt ochkreativt identifiera, formulera och lösa komplexa problem.
+
+* Källkritiskt förhållningssätt
+* Förmåga att dokumentera och synliggöra utvecklingsarbete
+* Presentera något tekninskt på ett illgängligt sätt
+* Planering av ett större arbete, sturktur
+* Fördjupning inom område
+

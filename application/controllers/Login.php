@@ -16,18 +16,16 @@ class Login extends CI_Controller {
   public function __construct()
   {
     parent::__construct();
-    //$this->load->model('user_model');
     $this->load->helper(array('url_helper', 'url', 'form', 'file', 'directory'));
     $this->load->library('session');
-    $this->load->library('ftp');
     $this->load->helper('download');
-  }
-  
+  }  
 
 /*----------Setting up Dropbox connection----------*/
   public function index()
   {
-  	//$this->load->library('session');
+		$this->load->library('session');
+
 		$this->session->set_userdata('client_id', '**');
 		$this->session->set_userdata('client_secret', '**');
     
@@ -35,12 +33,8 @@ class Login extends CI_Controller {
 		$this->dropbox = new Dropbox($app);
 
 		$this->authHelper = $this->dropbox->getAuthHelper();
-		$this->callbackUrl = "https://test2.testserver.se/index.php/login/login_callback";
+		$this->callbackUrl = "http://localhost:8888/Dropbox-API/index.php/login/login_callback";
 		$authUrl = $this->authHelper->getAuthUrl($this->callbackUrl);
-
-  	$this->session->set_userdata('user_id', '1');
-  	$user_id = $this->session->userdata('user_id');
-    //$data['user'] = $this->user_model->get_user($user_id);
 
     $this->load->view('pages/login_start', array(
     	'authUrl' => $authUrl,
@@ -54,17 +48,27 @@ class Login extends CI_Controller {
   public function login_callback()
   {
   	$this->index();
-  	$this->load->library('session');
+		$this->load->library('session');
+
 
 		if (isset($_GET['code']) && isset($_GET['state'])) 
 		{    
 	    $code = $_GET['code'];
-	    $state = $_GET['state'];
+			$state = $_GET['state'];
+
 	    try {
-	    	$this->callbackUrl = "https://test2.testserver.se/index.php/login/login_callback";
-	    	$accessToken = $this->authHelper->getAccessToken($code, $state, $this->callbackUrl);
-	    	$access_token = $accessToken->getToken();
-	      
+				$this->callbackUrl = "http://localhost:8888/Dropbox-API/index.php/login/login_callback";
+				$accessToken = $this->authHelper->getAccessToken($code, $state, $this->callbackUrl);
+				$access_token = $accessToken->getToken();
+				/*
+				echo '<pre>';
+				var_dump($this->callbackUrl);
+				var_dump($accessToken);
+				var_dump($access_token);
+				echo '</pre>';
+				*/
+	    	
+				
 	  	}catch (\Kunnu\Dropbox\Exceptions\DropboxClientException $e) {
 	  		$msg = ($e->getMessage());
 	  		
@@ -73,24 +77,35 @@ class Login extends CI_Controller {
 			  }else if(strpos($msg, 'expired') !== false){
           echo "<script type='text/javascript'>alert('Your session has expired. Please sign in again');</script>";
         }else{
-			  	echo "<script type='text/javascript'>alert(".json_encode($msg).");</script>";
+					echo "<script type='text/javascript'>alert(".json_encode($msg).");</script>";
+					/*
+					echo '<pre>';
+					var_dump($msg);
+					var_dump($e);
+					echo '</pre>';
+					*/
 			  }
-	  		redirect('', 'refresh');
-  	  }
+				redirect('', 'refresh');
+			}
+			$this->dropbox->setAccessToken($access_token);
+			$this->account = $this->dropbox->getCurrentAccount();
+	
+			$this->session->set_userdata('accessToken', $access_token);
+			$this->session->set_userdata('account', $this->account);
+			$this->session->set_userdata('code', $code);
+			$this->session->set_userdata('state', $state);
+	
 		}
-
-		$this->dropbox->setAccessToken($access_token);
-		$this->account = $this->dropbox->getCurrentAccount();
 		
-		$this->session->set_userdata('accessToken', $access_token);
-		$this->session->set_userdata('account', $this->account);
-		$this->session->set_userdata('code', $code);
-		$this->session->set_userdata('state', $state);
-
+/*
+		echo '<pre>';
+		var_dump($this->dropbox);
+		echo '</pre>';
+		*/
 		$this->user_display();
   }
 
-/*----------Empty the downloads/uploads folder on ftp server----------*/
+/*----------Empty the downloads/uploads folder----------*/
   public function deleteDir($dirPath)
 	{
 	  if (!is_dir($dirPath)) {
@@ -132,7 +147,6 @@ class Login extends CI_Controller {
 /*----------Displaying users dropbox content----------*/
   public function user_display()
   {
-    
   	$listFolderContents = $this->dropbox->listFolder("/");
 		$items = $listFolderContents->getItems();
 		$filesList = $items->all();
@@ -171,26 +185,19 @@ class Login extends CI_Controller {
 	    $path = $_GET['path'];
 	  }
 	  $path = str_replace('%20', ' ', $path);
-
-  	$config['hostname'] = 'test.testserver.se';
-		$config['username'] = '**';
-		$config['password'] = '**';
-		$config['debug']        = TRUE;
-  	$this->ftp->connect($config);
-
-  	$dirPath = '/home/test/www2/downloads/';
+		$dirPath = realpath(__DIR__ . '/../..') . '\download';
   	if(is_dir($dirPath)){
   		$this->deleteDir($dirPath);
   	}
-  	mkdir("/home/test/www2/downloads/", 0777, TRUE);
+  	mkdir($dirPath, 0777, TRUE);
   
   	$file = $this->dropbox->download($path);
   	$contents = $file->getContents();
-  	file_put_contents('/home/test/www2/downloads' .$path, $contents);
+  	file_put_contents($dirPath .$path, $contents);
   	$metaData = $file->getMetaData();
   	$metaData->getName();
 
-  	force_download("/home/test/www2/downloads$path", NULL);
+  	force_download($dirPath . $path, NULL);
   }
 /*----------Upload file in root----------*/
   public function do_upload() 
@@ -199,16 +206,12 @@ class Login extends CI_Controller {
 		$this->dropbox = new Dropbox($app);
     $this->dropbox->setAccessToken($this->session->userdata('accessToken'));
     
-  	$dirPath = '/home/test/www2/uploads/';
+	  $dirPath = realpath(__DIR__ . '/../..') . '\upload';
   	if(is_dir($dirPath)){
   		$this->deleteDir($dirPath);
   	}
-  	mkdir("/home/test/www2/uploads/", 0777, TRUE);
+		mkdir($dirPath, 0777, TRUE);
 
-  	$config['hostname'] = 'test.testserver.se';
-		$config['username'] = '**';
-		$config['password'] = '**';
-		$config['debug']        = TRUE;
   	$config['upload_path'] = './uploads/';
   	$config['allowed_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|ppt|pptx|pps|ppsx|odt|txt|xls|xlsx|key|zip|mp3|mp4|ogg|wav|m4v';
   	$config['max_size'] = 20000;
@@ -402,8 +405,6 @@ class Login extends CI_Controller {
     $this->dropbox->setAccessToken($this->session->userdata('accessToken'));
 
   	$path = $this->input->post('url');
-	 
-  	//$path = str_replace('%20', ' ', $path);
 
   	$listFolderContents = $this->dropbox->listFolder($path);
 		$items = $listFolderContents->getItems();
@@ -430,28 +431,22 @@ class Login extends CI_Controller {
 	  $path = str_replace('%20', ' ', $path);
 	  $sub_path = substr($path, 0, strrpos($path, "/"));
 
-  	$config['hostname'] = 'test.testserver.se';
-		$config['username'] = '**';
-		$config['password'] = '**';
-		$config['debug']        = TRUE;
-  	$this->ftp->connect($config);
-
-  	$dirPath = '/home/test/www2/downloads/';
+  	$dirPath = realpath(__DIR__ . '/../..') . '\download';
   	if(is_dir($dirPath)){
   		$this->deleteDir($dirPath);
   	}
-  	mkdir("/home/test/www2/downloads/", 0777, TRUE);
-  	if(!is_dir("/home/test/www2/downloads" .$sub_path. "/")){
-  		mkdir("/home/test/www2/downloads" .$sub_path. "/", 0777, TRUE);
+  	mkdir($dirPath, 0777, TRUE);
+  	if(!is_dir($dirPath .$sub_path. "/")){
+  		mkdir($dirPath .$sub_path. "/", 0777, TRUE);
   	}
   
   	$file = $this->dropbox->download($path);
   	$contents = $file->getContents();
-  	file_put_contents('/home/test/www2/downloads' .$path, $contents);
+  	file_put_contents($dirPath .$path, $contents);
   	$metaData = $file->getMetaData();
   	$metaData->getName();
 
-  	force_download("/home/test/www2/downloads$path", NULL);
+  	force_download($dirPath.$path, NULL);
   }
 
 /*----------Upload file from inside folder----------*/
@@ -466,20 +461,17 @@ class Login extends CI_Controller {
 	    $path = $_GET['path'];
 	  }
 
-	  $dirPath = '/home/test/www2/uploads/';
+	  $dirPath = realpath(__DIR__ . '/../..') . '\upload';
   	if(is_dir($dirPath)){
   		$this->deleteDir($dirPath);
   	}
-  	mkdir("/home/test/www2/uploads/", 0777, TRUE);
-	  if(!is_dir("/home/test/www2/uploads" .$path. "/")){
-  		mkdir("/home/test/www2/uploads" .$path. "/", 0777, TRUE);
+  	mkdir($dirPath, 0777, TRUE);
+	  if(!is_dir($dirPath .$path. "/")){
+  		mkdir($dirPath .$path. "/", 0777, TRUE);
   	}
 
-  	$config['hostname'] = 'test.testserver.se';
-		$config['username'] = '**';
-		$config['password'] = '**';
-		$config['debug']        = TRUE;
-  	$config['upload_path'] = './uploads/'.$path;
+  	
+  	$config['upload_path'] = './upload/'.$path;
   	$config['allowed_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|ppt|pptx|pps|ppsx|odt|txt|xls|xlsx|key|zip|mp3|mp4|ogg|wav|m4v';
   	$config['max_size'] = 20000;
   	$config['remove_spaces'] = FALSE;
@@ -571,7 +563,7 @@ class Login extends CI_Controller {
   } 
 
 /*----------Creates new folder in current subfolder----------*/
-  public function create_new_sub_folder($path)
+  public function create_new_sub_folder()
   {
     
   	$this->load->helper('url');
@@ -583,9 +575,7 @@ class Login extends CI_Controller {
     $path = str_replace('%20', ' ', $path);
   	$folder_name = $this->input->post('folder_name');
     $folder_name_with = substr_replace($folder_name, '/', 0, 0);
-  	$folder = $path . $folder_name_with;
-    $sub_folder = substr($folder, 0, strrpos($path, "/"));
-    $new_folder = $sub_folder . $folder_name_with;
+		$new_folder = $path . $folder_name_with;
 
   	try {
   		$this->dropbox->createFolder($new_folder);
@@ -608,7 +598,10 @@ class Login extends CI_Controller {
     $folder_name = $this->input->post('folder_name');
   	$shared_email = $this->input->post('shared_email');
   	$role = url_title($this->input->post('role'));
-  	$ACL = url_title($this->input->post('ACL'));
+		$ACL = url_title($this->input->post('ACL'));
+		
+		var_dump($folder_name);
+		var_dump($shared_email);
 
   	try {
   		$response = $this->dropbox->postToAPI('/sharing/share_folder', [
@@ -663,37 +656,37 @@ public function shared_folder_display()
         'path' => $path,
       ));
     }else{
-  	$sharedId = $shared->shared_folder_id;
+			$sharedId = $shared->shared_folder_id;
 
-	  $response = $this->dropbox->postToAPI('/sharing/list_folder_members', [
-	  	  "shared_folder_id" => $sharedId,
-	  	  "actions" => [],
-	  	  "limit" => 10
-	  	]);
-	  $data = $this->dropbox->postToAPI('/sharing/get_folder_metadata', [
-  		"shared_folder_id" => $sharedId
-  	]);
-  	$acl_policy = $data->getBody();
-  
-  	if(strpos($acl_policy, '"acl_update_policy": {".tag": "owner"}') !== false){
-  		$policy = 'owner';
-  		$newPolicy = 'editors';
-  	}else if(strpos($acl_policy, '"acl_update_policy": {".tag": "editors"}') !== false){
-  		$policy = 'editors';
-  		$newPolicy = 'owner';
-  	}
-  	  	
-		$this->load->view('user/shared_folder_page', array(
-		 	'account' => $account = $this->session->userdata('account'),
-		  'filesList' => $filesList,
-		  'path' => $path,
-		  'sharedId' => $sharedId,
-		  'dropbox' => $this->dropbox,
-		  'response' => $response,
-		  'policy' => $policy,
-		  'newPolicy' => $newPolicy
-		));
-  }
+			$response = $this->dropbox->postToAPI('/sharing/list_folder_members', [
+					"shared_folder_id" => $sharedId,
+					"actions" => [],
+					"limit" => 10
+				]);
+			$data = $this->dropbox->postToAPI('/sharing/get_folder_metadata', [
+				"shared_folder_id" => $sharedId
+			]);
+			$acl_policy = $data->getBody();
+		
+			if(strpos($acl_policy, '"acl_update_policy": {".tag": "owner"}') !== false){
+				$policy = 'owner';
+				$newPolicy = 'editors';
+			}else if(strpos($acl_policy, '"acl_update_policy": {".tag": "editors"}') !== false){
+				$policy = 'editors';
+				$newPolicy = 'owner';
+			}
+					
+			$this->load->view('user/shared_folder_page', array(
+				'account' => $account = $this->session->userdata('account'),
+				'filesList' => $filesList,
+				'path' => $path,
+				'sharedId' => $sharedId,
+				'dropbox' => $this->dropbox,
+				'response' => $response,
+				'policy' => $policy,
+				'newPolicy' => $newPolicy
+			));
+		}
   }
 
 /*----------View content of a shared sub folder----------*/
@@ -729,20 +722,16 @@ public function shared_sub_folder_display()
 	    $path = $_GET['path'];
 	  }
 
-	  $dirPath = '/home/test/www2/uploads/';
+	  $dirPath = realpath(__DIR__ . '/../..') . '\upload';
   	if(is_dir($dirPath)){
   		$this->deleteDir($dirPath);
   	}
-  	mkdir("/home/test/www2/uploads/", 0777, TRUE);
-	  if(!is_dir("/home/test/www2/uploads" .$path. "/")){
-  		mkdir("/home/test/www2/uploads" .$path. "/", 0777, TRUE);
+  	mkdir($dirPath, 0777, TRUE);
+	  if(!is_dir($dirPath .$path. "/")){
+  		mkdir($dirPath .$path. "/", 0777, TRUE);
   	}
 
-  	$config['hostname'] = 'test.testserver.se';
-		$config['username'] = '**';
-		$config['password'] = '**';
-		$config['debug']        = TRUE;
-  	$config['upload_path'] = './uploads/'.$path;
+  	$config['upload_path'] = './upload/'.$path;
   	$config['allowed_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|ppt|pptx|pps|ppsx|odt|txt|xls|xlsx|key|zip|mp3|mp4|ogg|wav|m4v';
   	$config['max_size'] = 20000;
   	$config['remove_spaces'] = FALSE;
@@ -1220,20 +1209,16 @@ public function shared_sub_folder_display()
       $path = $_GET['path'];
     }
 
-    $dirPath = '/home/test/www2/uploads/';
+    $dirPath = realpath(__DIR__ . '/../..') . '\upload';
     if(is_dir($dirPath)){
       $this->deleteDir($dirPath);
     }
-    mkdir("/home/test/www2/uploads/", 0777, TRUE);
-    if(!is_dir("/home/test/www2/uploads" .$path. "/")){
-      mkdir("/home/test/www2/uploads" .$path. "/", 0777, TRUE);
+    mkdir($dirPath, 0777, TRUE);
+    if(!is_dir($dirPath .$path. "/")){
+      mkdir($dirPath .$path. "/", 0777, TRUE);
     }
 
-    $config['hostname'] = 'test.testserver.se';
-    $config['username'] = '**';
-    $config['password'] = '**';
-    $config['debug']        = TRUE;
-    $config['upload_path'] = './uploads/'.$path;
+    $config['upload_path'] = './upload/'.$path;
     $config['allowed_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|ppt|pptx|pps|ppsx|odt|txt|xls|xlsx|key|zip|mp3|mp4|ogg|wav|m4v';
     $config['max_size'] = 20000;
     $config['remove_spaces'] = FALSE;

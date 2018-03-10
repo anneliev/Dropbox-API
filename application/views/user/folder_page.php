@@ -29,11 +29,11 @@ $folderPath = $path;
   	';
   if(substr_count($folderPath, "/") >1){
   	echo '
-			<h4>'.$folderPath.' <img onclick="load_folder('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="/../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
+			<h4>'.$folderPath.' <img onclick="load_folder('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="../../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
   	';
   }else{
   	echo '
-			<h4>'.$folderPath.' <img onclick="load_dropbox_table('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="/../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
+			<h4>'.$folderPath.' <img onclick="load_dropbox_table('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="../../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
   	';
   }
 	echo'	
@@ -70,14 +70,14 @@ $folderPath = $path;
 				$modified = str_replace('Z', ' ', $modified);
 
 				if(is_object($key->getSharingInfo())){
-					$data['.tag'] = ' <img height="25em" width="25em" src="/../images/shared_folder40x40.png" alt="shared folder icon" />';
+					$data['.tag'] = ' <img height="25em" width="25em" src="../../images/shared_folder40x40.png" alt="shared folder icon" />';
 				}else if($data['.tag'] === 'folder'){
-					$data['.tag'] = ' <img height="25em" width="25em" src="/../images/folder40x40.png" alt="folder icon" />';
+					$data['.tag'] = ' <img height="25em" width="25em" src="../../images/folder40x40.png" alt="folder icon" />';
 				}else if($data['.tag'] === 'file'){
-					$data['.tag'] = '<img height="25em" width="25em" src="/../images/file40x40.png" alt="file icon" />';
+					$data['.tag'] = '<img height="25em" width="25em" src="../../images/file40x40.png" alt="file icon" />';
 				}
 
-				if($data['.tag'] === ' <img height="25em" width="25em" src="/../images/folder40x40.png" alt="folder icon" />')
+				if($data['.tag'] === ' <img height="25em" width="25em" src="../../images/folder40x40.png" alt="folder icon" />')
 				{
 					echo '
 					<tr>
@@ -87,11 +87,11 @@ $folderPath = $path;
 						<td></td>
 						<td>'.$modified.'</td>
 						<td>
-						  <img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_folder('."'".urlencode($path)."'".');" />
+						  <img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_folder('."'".urlencode($path)."'".');" />
 						</td>
 					</tr>
 					';
-				}else if($data['.tag'] ===  ' <img height="25em" width="25em" src="/../images/shared_folder40x40.png" alt="shared folder icon" />')
+				}else if($data['.tag'] ===  ' <img height="25em" width="25em" src="../../images/shared_folder40x40.png" alt="shared folder icon" />')
 				{
 					echo '
 					<tr>
@@ -100,8 +100,8 @@ $folderPath = $path;
 						<td></td>
 						<td></td>
 						<td>'.$modified.'</td>
-						<td><a href="https://test2.testserver.se/index.php/login/show_modal_shared_folder?path='.$path.'">
-						  <img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to delete" />
+						<td><a href="http://localhost:8888/Dropbox-API/index.php/login/show_modal_shared_folder?path='.$path.'">
+						  <img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to delete" />
 						</a></td>
 					</tr>
 					';
@@ -113,11 +113,11 @@ $folderPath = $path;
 						<td> '.$key->name.'</td>
 						<td> '.number_format($key->size/1000,1,'.','').'</td>
 						<td>'.$modified.'</td>
-						<td><a href="https://test2.testserver.se/index.php/login/download_from_folder?path='.$path.'">
-						  <img height="25em" width="25em" src="/../images/download_40x40.png" alt="dowload icon" title="Click to download" />
+						<td><a href="http://localhost:8888/Dropbox-API/index.php/login/download_from_folder?path='.$path.'">
+						  <img height="25em" width="25em" src="../../images/download_40x40.png" alt="dowload icon" title="Click to download" />
 						</a></td>
 						<td>
-						  <img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_folder('."'".urlencode($path)."'".');"/>
+						  <img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_folder('."'".urlencode($path)."'".');"/>
 						</td>
 					</tr>
 					';

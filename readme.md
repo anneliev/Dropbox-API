@@ -11,6 +11,9 @@ This course is an internship at a work place of our choosing. I decided to do my
 My first assignment was to produce a Dropbox app that is to be implemented into their own project managment system.
 The app I created is linked to the users Dropbox. The design is simple since I focused on functionality and Bluescreen will change it and use the same design as thier system when implementing it.
 
+2018-03-10
+I am using this project as my graduation work so I have changed the connection and urls to localhost instead of ftp.
+
 >Documentation I've used:
   - [kunalvarma05/dropbox-php-sdk](https://github.com/kunalvarma05/dropbox-php-sdk/wiki)
   - [Dropbox for HTTP Developers](https://www.dropbox.com/developers/documentation/http/documentation)

@@ -7,11 +7,11 @@ echo
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Bluescreen Dropbox</title>
+	<title>Dropbox application</title>
 	
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
 	<link href="https://fonts.googleapis.com/css?family=Muli" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="/../css/style.css">
+	<link rel="stylesheet" type="text/css" href="../../css/style.css">
 	
 	<script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -27,7 +27,7 @@ echo
 			
 			<div class="col-2">
 				<br />
-				<img height="60em" width="60em" src="/../images/dropbox_logo.png" alt="Dropbox logo" />
+				<img height="60em" width="60em" src="../../images/dropbox_logo.png" alt="Dropbox logo" />
 			</div>
 			<div class="col-4" id="signin_btn">
 				<br />
@@ -35,7 +35,7 @@ echo
 				</div>
 				<div class="col-4" id="signout_btn">
 				<br />
-				<a href="https://test2.testserver.se/index.php/login/sign_out" class="btn btn-outline-primary btn-lg">Sign Out</a>
+				<a href="http://localhost:8888/Dropbox-API/index.php/login/sign_out" class="btn btn-outline-primary btn-lg">Sign Out</a>
 			</div>
 			<div class="col-2">
 			</div>
@@ -44,5 +44,3 @@ echo
 </body>
 </html>
 ';
-
-

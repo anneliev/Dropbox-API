@@ -28,11 +28,11 @@ echo '
 	<br /> ';
   if(substr_count($folderPath, "/") >1){
   	echo '
-			<h4>'.$folderPath.' <img onclick="load_shared_folder('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="/../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
+			<h4>'.$folderPath.' <img onclick="load_shared_folder('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="../../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
   	';
   }else{
   	echo '
-			<h4>'.$folderPath.' <img onclick="load_dropbox_table('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="/../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
+			<h4>'.$folderPath.' <img onclick="load_dropbox_table('."'".substr($path, 0, strrpos($path, "/"))."'".');" height="25em" width="25em" style="margin-left: 1em;" src="../../images/folder_up40x40.png" alt="folder up icon" title="Previous folder" style="cursor:pointer" /></h4>
   	';
   }
 		echo '
@@ -69,11 +69,11 @@ echo '
 					$modified = str_replace('Z', ' ', $modified);
 
 					if($data['.tag'] === 'folder'){
-						$data['.tag'] = ' <img height="25em" width="25em" src="/../images/folder40x40.png" alt="folder icon" />';
+						$data['.tag'] = ' <img height="25em" width="25em" src="../../images/folder40x40.png" alt="folder icon" />';
 					}else if($data['.tag'] === 'file'){
-						$data['.tag'] = '<img height="25em" width="25em" src="/../images/file40x40.png" alt="file icon" />';
+						$data['.tag'] = '<img height="25em" width="25em" src="../../images/file40x40.png" alt="file icon" />';
 					}
-					if($data['.tag'] === ' <img height="25em" width="25em" src="/../images/folder40x40.png" alt="folder icon" />')
+					if($data['.tag'] === ' <img height="25em" width="25em" src="../../images/folder40x40.png" alt="folder icon" />')
 					{
 						echo '
 						<tr>
@@ -83,7 +83,7 @@ echo '
 							<td></td>
 							<td>'.$modified.'</td>
 							<td>
-							  <img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_shared_folder('."'".urlencode($path)."'".');" />
+							  <img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_shared_folder('."'".urlencode($path)."'".');" />
 							</td>
 						</tr>
 						';
@@ -95,11 +95,11 @@ echo '
 							<td> '.$key->name.'</td>
 							<td> '.number_format($key->size/1000,1,'.','').'</td>
 							<td>'.$modified.'</td>
-							<td><a href="https://test2.testserver.se/index.php/login/download_from_folder?path='.$path.'">
-							  <img height="25em" width="25em" src="/../images/download_40x40.png" alt="dowload icon" title="Click to download" />
+							<td><a href="http://localhost:8888/Dropbox-API/index.php/login/download_from_folder?path='.$path.'">
+							  <img height="25em" width="25em" src="../../images/download_40x40.png" alt="dowload icon" title="Click to download" />
 							</a></td>
 							<td>
-							  <img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_shared_folder('."'".urlencode($path)."'".');" />
+							  <img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to delete" style="cursor:pointer" onclick="show_modal_in_shared_folder('."'".urlencode($path)."'".');" />
 							</td>
 						</tr>
 						';
@@ -222,7 +222,7 @@ echo '
 									  <input type="hidden" id="name" name="name" value="'.$name.'">
 										<input type="hidden" id="remove_email" name="remove_email" value="'.$email.'">
 										<input type="hidden" id="sharedId" name="sharedId" value="'.$sharedId.'">
-										<img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_member('."'".$name."'".', '."'".$email."'".');" />
+										<img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_member('."'".$name."'".', '."'".$email."'".');" />
 								  </td>
 
 								  <td>
@@ -260,7 +260,7 @@ echo '
 									<td><input type="hidden" id="name" name="name" value="'.$name.'">
 										<input type="hidden" id="remove_email" name="remove_email" value="'.$email.'">
 										<input type="hidden" id="sharedId" name="sharedId" value="'.$sharedId.'">
-										<img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_member('."'".$name."'".', '."'".$email."'".');" />
+										<img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_member('."'".$name."'".', '."'".$email."'".');" />
 								  </td>
 					  		</tr>
 					  		';
@@ -310,7 +310,7 @@ echo '
 								<td><input type="hidden" id="invitee_name" name="invitee_name" value="'.$email.'">
 										<input type="hidden" id="invitee_email" name="invitee_email" value="'.$email.'">
 										<input type="hidden" id="sharedId" name="sharedId" value="'.$sharedId.'">
-										<img height="25em" width="25em" src="/../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_invitee('."'".$email."'".');" />
+										<img height="25em" width="25em" src="../../images/delete40x40.png" alt="delete icon" title="Click to remove" onclick="show_modal_remove_invitee('."'".$email."'".');" />
 								</td>
 				  		</tr>	
 				';
@@ -352,7 +352,7 @@ echo '
 <div class="container">
 	<div class="col-6">
 		<h4>Add member</h4>		
-		<form class="form-horizontal" role="form" method="post" action="https://test2.testserver.se/index.php/login/add_member?path='.$folderPath.'">
+		<form class="form-horizontal" role="form" method="post" action="http://localhost:8888/Dropbox-API/index.php/login/add_member?path='.$folderPath.'">
 			<div class="form-group">
 			  <label for="email">Add </label>
 			  <input type="hidden" id="sharedId" name="sharedId" value="'.$sharedId.'">
