@@ -212,7 +212,7 @@ class Login extends CI_Controller {
   	}
 		mkdir($dirPath, 0777, TRUE);
 
-  	$config['upload_path'] = './uploads/';
+		$config['upload_path'] = './upload/';
   	$config['allowed_types'] = 'gif|jpg|jpeg|png|pdf|doc|docx|ppt|pptx|pps|ppsx|odt|txt|xls|xlsx|key|zip|mp3|mp4|ogg|wav|m4v';
   	$config['max_size'] = 20000;
   	$config['remove_spaces'] = FALSE;
